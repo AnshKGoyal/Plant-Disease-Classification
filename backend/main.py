@@ -18,6 +18,8 @@ from ml_model import predict_disease
 from fastapi.responses import FileResponse
 from sqlalchemy import or_
 
+os.makedirs("uploads", exist_ok=True)
+
 app = FastAPI()
 security = HTTPBearer()
 
