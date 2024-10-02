@@ -32,12 +32,17 @@ plant_disease_classification/
 │   ├── NasNetMobile.h5                # Pre-trained model
 │   ├── NasNetMobile.keras             # Pre-trained model
 ├── example_images/                    # Example images for testing
-├── plant-disease-classification.ipynb # Jupyter notebook for training
+├── plant-disease-classification.ipynb # Jupyter notebook for training               
 ├── requirements.txt                   # Dependencies for the project
 └── README.md                          # Project documentation
 
 ```
 **Note**: In case GitHub's LFS bandwidth limit is reached, you can also download the models using this [Google Drive link](https://drive.google.com/drive/folders/1sQCoF_Q6XmXKS3-YXhH8ZNv047P4L3By?usp=sharing).
+
+### Additional Resources
+For a more detailed overview of the project, please refer to the [Project Overview](https://github.com/AnshKGoyal/Plant-Disease-Classification/blob/main/Plant%20Disease%20Classification%20Web%20Application%20Overview.md).
+
+It also contains visual diagrams like Data Flow Diagram and Entity Relationship Diagram to support understanding.
 
 ## Demo Video
 
