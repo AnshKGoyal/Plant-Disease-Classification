@@ -26,7 +26,7 @@ plant_disease_classification/
 │   ├── app.py                         # Streamlit frontend
 │   ├── ml_model.py                    # Model loading and inference
 │   └── uploads/                       # Directory to store uploaded images
-├── model/
+├── model/			       
 │   ├── label_encoder.joblib           # Label encoder for disease labels
 │   ├── resnet_50_95.h5                # Pre-trained model
 │   ├── NasNetMobile.h5                # Pre-trained model
@@ -37,7 +37,7 @@ plant_disease_classification/
 └── README.md                          # Project documentation
 
 ```
-
+**Note**: In case GitHub's LFS bandwidth limit is reached, you can also download the models using this [Google Drive link](https://drive.google.com/drive/folders/1sQCoF_Q6XmXKS3-YXhH8ZNv047P4L3By?usp=sharing).
 
 ## Demo Video
 
@@ -71,6 +71,7 @@ source venv/bin/activate  # On Windows, use `.\venv\Scripts\activate`
 ```
 python -m pip install -r requirements.txt
 ```
+**Note**: If the bandwidth limit for GitHub LFS is exceeded and you cannot download the models, you can also use this [Google Drive link](https://drive.google.com/drive/folders/1sQCoF_Q6XmXKS3-YXhH8ZNv047P4L3By?usp=sharing) to download the models.
 
 4. Update the `SERVER` and `DATABASE` variables in `backend/database.py` with your SQL Server details.
 ```
