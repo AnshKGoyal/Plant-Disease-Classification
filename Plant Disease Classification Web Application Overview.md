@@ -123,7 +123,7 @@ plant_disease_classification/
 
 ## Dataset
 - **Download Links**:
-    - [Plant pathogens dataset](https://www.kaggle.com/datasets/sujallimje/plant-pathogens)
+    - [Plant pathogens dataset](https://www.kaggle.com/datasets/sujallimje/plant-pathogens) - licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 ## Detailed Framework
 
@@ -293,6 +293,18 @@ This database design efficiently manages users, images, comments, predictions, a
 - **Comments Section**: Users can leave comments on the predicted results and view comments from others​.
 - **User Activity Logs**: Displays logs of user activities, such as login and logout events, and tracks which images they have uploaded​.
 - **User Profile Page**: Displays user details and their associated activity logs​.
+
+# References
+1.	FastAPI documentation
+2.	Streamlit documentation
+3.	SQLAlchemy documentation
+4.	TensorFlow and Keras documentation
+5.	Plant Pathogens dataset on Kaggle
+6.	Research papers related to NasNet and Resnet cnn architectures.
+7.	SQL Server documentation
+8.	Python Libraries (as per  requirements.txt)
+9.	Additional relevant resources
+10.	My personal Obsidian Notes
 
 
 # Project Links:
