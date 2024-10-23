@@ -16,7 +16,7 @@ import schemas
 from database import SessionLocal, engine
 from ml_model import predict_disease
 from fastapi.responses import FileResponse
-from sqlalchemy import or_
+from sqlalchemy import or_,func,and_
 
 os.makedirs("uploads", exist_ok=True)
 
@@ -254,7 +254,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
-@app.get("/images", response_model=List[schemas.Image])
+'''@app.get("/images", response_model=List[schemas.Image])
 def list_images(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), user: models.User = Depends(get_user_from_token)):
     # Query for images directly uploaded by the user or uploaded through image_uploads
     images = db.query(models.Image).filter(
@@ -264,7 +264,57 @@ def list_images(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), 
         )
     ).order_by(models.Image.id).offset(skip).limit(limit).all()
     
-    return [schemas.Image.model_validate(image) for image in images]
+    return [schemas.Image.model_validate(image) for image in images]'''
+
+'''
+@app.get("/images", response_model=List[schemas.UserImageUpload])
+def list_images(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), user: models.User = Depends(get_user_from_token)):
+    # Query for image uploads made by the user
+    image_uploads = db.query(models.ImageUpload).filter(models.ImageUpload.user_id == user.id).\
+        join(models.Image, models.ImageUpload.image_id == models.Image.id).\
+        order_by(models.ImageUpload.uploaded_at.desc()).offset(skip).limit(limit).all()
+    
+    return [schemas.UserImageUpload(
+        id=upload.image.id,
+        filename=upload.image.filename,
+        content_type=upload.image.content_type,
+        uploaded_at=upload.uploaded_at,
+        user_id=upload.user_id
+    ) for upload in image_uploads]'''
+
+@app.get("/images", response_model=List[schemas.UserImageUpload])
+def list_images(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), user: models.User = Depends(get_user_from_token)):
+    # Subquery to get the latest upload for each image by the user
+    latest_uploads = db.query(
+        models.ImageUpload.image_id,
+        func.max(models.ImageUpload.uploaded_at).label('latest_upload')
+    ).filter(
+        models.ImageUpload.user_id == user.id
+    ).group_by(
+        models.ImageUpload.image_id
+    ).subquery()
+    # Main query joining with the subquery to get only the latest upload for each image
+    image_uploads = db.query(models.ImageUpload).join(
+        latest_uploads,
+        and_(
+            models.ImageUpload.image_id == latest_uploads.c.image_id,
+            models.ImageUpload.uploaded_at == latest_uploads.c.latest_upload
+        )
+    ).filter(
+        models.ImageUpload.user_id == user.id
+    ).join(
+        models.Image, 
+        models.ImageUpload.image_id == models.Image.id
+    ).order_by(
+        models.ImageUpload.uploaded_at.desc()
+    ).offset(skip).limit(limit).all()
+    return [schemas.UserImageUpload(
+        id=upload.image.id,
+        filename=upload.image.filename,
+        content_type=upload.image.content_type,
+        uploaded_at=upload.uploaded_at,
+        user_id=upload.user_id
+    ) for upload in image_uploads]
 
 '''If a user uploads the same image multiple times:
 There will be multiple entries in the image_uploads table.

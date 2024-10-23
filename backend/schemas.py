@@ -146,3 +146,13 @@ class ImageDetails(BaseModel):
 
     class Config:
         from_attributes = True
+
+class UserImageUpload(BaseModel):
+    id: int
+    filename: str
+    content_type: str
+    uploaded_at: datetime
+    user_id: int
+
+    class Config:
+        from_attributes = True
