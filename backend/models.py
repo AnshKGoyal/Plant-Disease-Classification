@@ -116,5 +116,5 @@ class ImageUpload(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     uploaded_at = Column(DateTime, default=datetime.datetime.now)
 
-    image = relationship("Image")
-    user = relationship("User")
+    image = relationship("Image", overlaps="uploaders,uploaded_images")
+    user = relationship("User",  overlaps="uploaders,uploaded_images")
