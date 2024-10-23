@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import io
 from PIL import Image
+import time
 
 # FastAPI backend URL
 API_URL = "http://localhost:8000"  # Update this if your FastAPI app is running on a different port
@@ -36,6 +37,7 @@ def login_page():
             st.session_state['token'] = result['token']
             st.session_state['user'] = result['user']
             st.success("Logged in successfully!")
+            time.sleep(1)
             st.rerun()
         else:
             st.error("Login failed. Please check your credentials.")
@@ -86,6 +88,7 @@ def register_page():
         result = register_user(username, email, password)
         if "id" in result:
             st.success("Registration successful! You can now log in.")
+            time.sleep(1)
             st.session_state['page'] = 'login'
             st.rerun()
         else:
@@ -190,12 +193,13 @@ def logout():
         try:
             response = requests.post(f'{API_URL}/logout', params={'token': st.session_state.token})
             
-            st.write(f"Response status code: {response.status_code}")
-            st.write(f"Response content: {response.text}")
+            #st.write(f"Response status code: {response.status_code}")
+            #st.write(f"Response content: {response.text}")
             
             if response.status_code == 200:
                 st.session_state.clear()
                 st.success("Logged out successfully")
+                time.sleep(1)
                 st.rerun()
             else:
                 st.error(f"Failed to log out: {response.text}")
