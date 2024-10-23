@@ -22,7 +22,7 @@ def login_user(username, password):
     if response.status_code == 200:
         return response.json()
     else:
-        st.error("Login failed. Please check your credentials.")
+        #st.error("Login failed. Please check your credentials.")
         return None
 
 def login_page():
