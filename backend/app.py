@@ -147,7 +147,7 @@ def register_page():
             result = register_user(username, email, password)
             if "id" in result:
                 st.success("Registration successful! You can now log in.")
-                time.sleep(5)
+                time.sleep(1)
                 st.session_state['page'] = 'login'
                 st.rerun()
             else:
