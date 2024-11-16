@@ -3,6 +3,8 @@ import requests
 import io
 from PIL import Image
 import time
+import re
+
 
 # FastAPI backend URL
 API_URL = "http://localhost:8000"  # Update this if your FastAPI app is running on a different port
@@ -26,13 +28,24 @@ def login_user(username, password):
         #st.error("Login failed. Please check your credentials.")
         return None
 
+def check_user_exists(username):
+    response = requests.get(f"{API_URL}/check-user/{username}")
+    if response.status_code == 200:
+        return response.json().get('exists', False)
+    return False
+
 def login_page():
     st.title("Login")
     username = st.text_input("Username")
     password = st.text_input("Password", type='password')
     
     if st.button("Login"):
+        # Check if fields are empty first
+        if not username or not password:
+            st.error("Please enter both username and password")
+            return
         result = login_user(username, password)
+        
         if result and "token" in result:
             st.session_state['token'] = result['token']
             st.session_state['user'] = result['user']
@@ -40,9 +53,25 @@ def login_page():
             time.sleep(1)
             st.rerun()
         else:
-            st.error("Login failed. Please check your credentials.")
+            # More detailed error handling
+            # Check if the username exists
+            try:
+                # You might need to add a method in your backend to check user existence
+                user_exists = check_user_exists(username)
+                
+                if not user_exists:
+                    st.error("Username not found. Would you like to register?")
+                    
+                else:
+                    # Username exists, so it's likely a password issue
+                    st.error("Incorrect password. Please try again.")
+            except Exception:
+                # Fallback error message
+                st.error("Login failed. Please check your credentials.")
     
-    if st.button("Don't have an account? Register"):
+    # Registration option
+    st.write("Don't have an account?")
+    if st.button("Register Here"):
         st.session_state['page'] = 'register'
         st.rerun()
 
@@ -75,7 +104,10 @@ def predict_disease(image_id, token):
         st.error(f"Error during prediction request: {str(e)}")
         return None
 
-
+def validate_email(email):
+    # Basic email validation regex
+    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(email_regex, email) is not None
 
 
 def register_page():
@@ -84,15 +116,42 @@ def register_page():
     email = st.text_input("Email")
     password = st.text_input("Password", type='password')
     
+    # Registration button
     if st.button("Register"):
-        result = register_user(username, email, password)
-        if "id" in result:
-            st.success("Registration successful! You can now log in.")
-            time.sleep(1)
-            st.session_state['page'] = 'login'
-            st.rerun()
-        else:
-            st.error("Registration failed. Please try again.")
+        # Perform validations
+        is_valid = True
+        
+        # Username validation
+        if not username:
+            st.error("Username cannot be empty")
+            is_valid = False
+        
+        # Email validation
+        if not email:
+            st.error("Email cannot be empty")
+            is_valid = False
+        elif not validate_email(email):
+            st.error("Invalid email format. Please enter a valid email address.")
+            is_valid = False
+        
+        # Password validation
+        if not password:
+            st.error("Password cannot be empty")
+            is_valid = False
+        elif len(password) < 6:
+            st.error("Password must be at least 6 characters long")
+            is_valid = False
+        
+        # If all validations pass, proceed with registration
+        if is_valid:
+            result = register_user(username, email, password)
+            if "id" in result:
+                st.success("Registration successful! You can now log in.")
+                time.sleep(5)
+                st.session_state['page'] = 'login'
+                st.rerun()
+            else:
+                st.error("Registration failed. Please try again.")
     
     if st.button("Already have an account? Login"):
         st.session_state['page'] = 'login'
