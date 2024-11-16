@@ -68,6 +68,11 @@ def get_user_from_token(credentials: HTTPAuthorizationCredentials = Depends(secu
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
+@app.get("/check-user/{username}")
+def check_user_exists(username: str, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.username == username).first()
+    return {"exists": user is not None}
+
 @app.post("/register", response_model=schemas.User)
 def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.username == user.username).first()
